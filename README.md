@@ -1,4 +1,4 @@
-# mse-user-test
+# adapp
 
 This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines React, TanStack Start, Hono, TRPC, and more.
 
@@ -45,14 +45,14 @@ bun dev
 
 Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
 
-The API is running at [http://localhost:3000](http://localhost:3000).
+The API is running at [http://localhost:8080](http://localhost:8080).
 
 
 
 ## Project Structure
 
 ```
-mse-user-test/
+adapp/
 ├── apps/
 │   ├── web/         # Frontend application (React + TanStack Start)
 │   └── server/      # Backend API (Hono, TRPC)

@@ -1,0 +1,111 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Common Development Tasks
+
+## Adding New Features
+
+### Creating a New API Route
+1. **Define Schema**: Add new tables/columns in [apps/server/src/db/schema/](mdc:apps/server/src/db/schema/)
+2. **Generate Migration**: Run `bun run db:generate` in server directory
+3. **Create Router**: Add procedures in [apps/server/src/routers/index.ts](mdc:apps/server/src/routers/index.ts)
+4. **Client Usage**: Use tRPC hooks in frontend components via [apps/web/src/utils/trpc.ts](mdc:apps/web/src/utils/trpc.ts)
+
+### Adding a New Page
+1. **Create Route File**: Add new file in [apps/web/src/routes/](mdc:apps/web/src/routes/)
+2. **Route Structure**: Follow pattern from [apps/web/src/routes/pokemon.tsx](mdc:apps/web/src/routes/pokemon.tsx)
+3. **Update Navigation**: Add links in [apps/web/src/components/header.tsx](mdc:apps/web/src/components/header.tsx)
+4. **Route Tree**: Auto-generated in [apps/web/src/routeTree.gen.ts](mdc:apps/web/src/routeTree.gen.ts)
+
+### Adding New UI Components
+1. **Check Existing**: Review [apps/web/src/components/ui/](mdc:apps/web/src/components/ui/) for existing components
+2. **shadcn/ui**: Use `bunx shadcn@latest add <component>` to add new shadcn components
+3. **Custom Components**: Create in [apps/web/src/components/](mdc:apps/web/src/components/)
+4. **Follow Patterns**: Use consistent styling and prop patterns
+
+## Database Operations
+
+### Schema Changes
+```bash
+# Navigate to server
+cd apps/server
+
+# Make schema changes in src/db/schema/
+# Generate migration
+bun run db:generate
+
+# Apply migration (development)
+bun run db:push
+
+# View database
+bun run db:studio
+```
+
+### Adding Authentication
+- **Server Side**: Update [apps/server/src/lib/auth.ts](mdc:apps/server/src/lib/auth.ts)
+- **Client Side**: Update [apps/web/src/lib/auth-client.ts](mdc:apps/web/src/lib/auth-client.ts)
+- **Database**: Modify [apps/server/src/db/schema/auth.ts](mdc:apps/server/src/db/schema/auth.ts)
+
+## Performance Optimization
+
+### Large Data Sets
+Follow the pattern in [apps/web/src/routes/pokemon.tsx](mdc:apps/web/src/routes/pokemon.tsx):
+- **Virtual Scrolling**: Implement `useVirtualScrolling` pattern
+- **Pagination**: Load data incrementally
+- **Filtering**: Use `useMemo` for expensive filters
+- **Image Loading**: Use `loading="lazy"` attribute
+
+### Bundle Optimization
+- **Code Splitting**: Use dynamic imports for large components
+- **Tree Shaking**: Ensure imports are specific (not `import *`)
+- **Asset Optimization**: Optimize images and static assets
+
+## Styling Tasks
+
+### Theme Customization
+- **Tailwind Config**: Update [apps/web/tailwind.config.js](mdc:apps/web/tailwind.config.js)
+- **CSS Variables**: Modify [apps/web/src/index.css](mdc:apps/web/src/index.css)
+- **shadcn/ui Theme**: Adjust in [apps/web/components.json](mdc:apps/web/components.json)
+
+### Responsive Design
+- Use mobile-first approach
+- Test breakpoints: `sm:`, `md:`, `lg:`, `xl:`, `2xl:`
+- Consistent spacing using Tailwind scale
+
+## Debugging & Testing
+
+### Development Tools
+- **tRPC Panel**: Access API documentation in development
+- **Database Studio**: View data with `bun run db:studio`
+- **Hot Reload**: Both server and client support hot reload
+
+### Common Issues
+- **Type Errors**: Check tRPC router exports and client imports
+- **Database Issues**: Verify connection string and schema migrations
+- **Build Errors**: Check import paths and dependency versions
+- **Styling Issues**: Verify Tailwind class names and CSS imports
+
+## Code Quality
+
+### Before Committing
+```bash
+# Format code
+bun format
+
+# Check linting
+bun lint
+
+# Build to check for errors
+bun build
+
+# Test in browser
+bun dev
+```
+
+### Performance Checks
+- Use React DevTools Profiler
+- Check bundle size with build output
+- Monitor network requests in DevTools
+- Test on different devices and connections

@@ -1,0 +1,60 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Architecture Patterns & Tech Stack
+
+## Backend Architecture
+
+### tRPC API Pattern
+- **Router Definition**: Define API routes in [apps/server/src/routers/index.ts](mdc:apps/server/src/routers/index.ts)
+- **Context Setup**: Request context configured in [apps/server/src/lib/context.ts](mdc:apps/server/src/lib/context.ts)
+- **Type Safety**: Full end-to-end TypeScript type safety between client and server
+
+### Database Layer
+- **ORM**: Drizzle ORM with configuration in [apps/server/drizzle.config.ts](mdc:apps/server/drizzle.config.ts)
+- **Schema**: Database schema defined in [apps/server/src/db/schema/](mdc:apps/server/src/db/schema/)
+- **Connection**: Database connection setup in [apps/server/src/db/index.ts](mdc:apps/server/src/db/index.ts)
+- **Migrations**: Auto-generated migrations in [apps/server/src/db/migrations/](mdc:apps/server/src/db/migrations/)
+
+### Authentication
+- **Server Auth**: Authentication logic in [apps/server/src/lib/auth.ts](mdc:apps/server/src/lib/auth.ts)
+- **Auth Schema**: User/session schema in [apps/server/src/db/schema/auth.ts](mdc:apps/server/src/db/schema/auth.ts)
+
+## Frontend Architecture
+
+### Routing Pattern
+- **Router Setup**: TanStack Router configuration in [apps/web/src/router.tsx](mdc:apps/web/src/router.tsx)
+- **Route Tree**: Auto-generated route tree in [apps/web/src/routeTree.gen.ts](mdc:apps/web/src/routeTree.gen.ts)
+- **Layout**: Root layout component in [apps/web/src/routes/__root.tsx](mdc:apps/web/src/routes/__root.tsx)
+
+### State Management & Data Fetching
+- **tRPC Client**: Client setup in [apps/web/src/utils/trpc.ts](mdc:apps/web/src/utils/trpc.ts)
+- **Auth Client**: Client-side auth in [apps/web/src/lib/auth-client.ts](mdc:apps/web/src/lib/auth-client.ts)
+- **Type Safety**: Shared types from server automatically available on client
+
+### UI Components
+- **Design System**: shadcn/ui components in [apps/web/src/components/ui/](mdc:apps/web/src/components/ui/)
+- **Configuration**: shadcn/ui config in [apps/web/components.json](mdc:apps/web/components.json)
+- **Styling**: Tailwind CSS with utilities in [apps/web/src/lib/utils.ts](mdc:apps/web/src/lib/utils.ts)
+
+## Performance Patterns
+
+### Virtual Scrolling Example
+See [apps/web/src/routes/pokemon.tsx](mdc:apps/web/src/routes/pokemon.tsx) for:
+- Custom `useVirtualScrolling` hook for large datasets
+- Lazy loading with pagination
+- Optimized React rendering patterns
+- Image lazy loading with loading states
+
+### Monorepo Organization
+- **Workspace**: Configured in root [package.json](mdc:package.json)
+- **Build System**: Turbo for parallel builds and caching
+- **Shared Dependencies**: Managed at workspace level
+
+## Development Patterns
+- **File-based Routing**: Routes automatically generated from file structure
+- **Type-first Development**: Schema-driven development with Drizzle
+- **Component Composition**: Reusable UI components with consistent patterns
+- **Error Boundaries**: Proper error handling in route components

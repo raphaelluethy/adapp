@@ -13,12 +13,13 @@
 
 # Build outputs
 /.next/
-/out/
-/build/
-/dist/
+**/out/
+**/build/
+**/dist/
 .vinxi
 .output
 .react-router/
+**/.nitro/
 
 # Deployment
 .vercel

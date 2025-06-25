@@ -1,0 +1,132 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Coding Conventions & Best Practices
+
+## TypeScript Standards
+
+### Type Definitions
+- Use interface for object shapes that might be extended
+- Use type for unions, intersections, and computed types
+- Define types close to their usage or in dedicated type files
+- Use explicit return types for functions when beneficial for clarity
+
+### Import Organization
+```typescript
+// External libraries first
+import { createFileRoute } from "@tanstack/react-router";
+import { useState, useMemo } from "react";
+
+// UI components
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+// Local utilities
+import { cn } from "@/lib/utils";
+
+// Local components (if any)
+```
+
+## React Patterns
+
+### Component Structure
+Follow the pattern established in [apps/web/src/routes/pokemon.tsx](mdc:apps/web/src/routes/pokemon.tsx):
+
+1. **Interfaces First**: Define component interfaces at the top
+2. **Helper Functions**: Pure functions and utilities
+3. **Custom Hooks**: Reusable logic extraction
+4. **Component Definition**: Main component logic
+5. **Route Export**: File-based routing export
+
+### State Management
+```typescript
+// Use descriptive state names
+const [searchTerm, setSearchTerm] = useState("");
+const [selectedType, setSelectedType] = useState("all");
+
+// Use useMemo for expensive computations
+const filteredPokemon = useMemo(() => {
+    return allPokemon.filter((pokemon) => {
+        const matchesSearch = pokemon.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesType = selectedType === "all" || pokemon.types.includes(selectedType);
+        return matchesSearch && matchesType;
+    });
+}, [allPokemon, searchTerm, selectedType]);
+```
+
+### Performance Patterns
+- Use `useMemo` for expensive computations
+- Implement custom hooks for complex logic (see `useVirtualScrolling`)
+- Use `loading="lazy"` for images
+- Implement virtual scrolling for large datasets
+
+## Styling Conventions
+
+### Tailwind Classes
+- Use [apps/web/src/lib/utils.ts](mdc:apps/web/src/lib/utils.ts) `cn()` utility for conditional classes
+- Group related classes together
+- Use consistent spacing scale (gap-4, space-y-6, etc.)
+- Follow mobile-first responsive design
+
+### Component Styling
+```typescript
+// Good: Semantic class grouping
+<Card className="group hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer">
+
+// Good: Conditional styling with cn()
+<span className={cn(
+    "px-2 py-1 rounded-full text-xs font-medium text-white",
+    typeColors[type] || "bg-gray-400"
+)}>
+```
+
+## Database Patterns
+
+### Schema Definition
+Follow patterns in [apps/server/src/db/schema/auth.ts](mdc:apps/server/src/db/schema/auth.ts):
+- Use descriptive table and column names
+- Include proper indexes
+- Define relationships clearly
+- Use appropriate data types
+
+### tRPC Procedures
+- Use descriptive procedure names
+- Include input validation with Zod
+- Return consistent response shapes
+- Handle errors appropriately
+
+## File Organization
+
+### Naming Conventions
+- **Files**: kebab-case for components, camelCase for utilities
+- **Components**: PascalCase
+- **Functions**: camelCase
+- **Constants**: UPPER_SNAKE_CASE
+- **Types/Interfaces**: PascalCase
+
+### Directory Structure
+- Keep related files together
+- Use index files for clean imports
+- Separate concerns (components, utils, types)
+- Follow established patterns in [apps/web/src/components/](mdc:apps/web/src/components/)
+
+## Code Quality
+
+### Error Handling
+- Use proper error boundaries
+- Handle loading and error states
+- Provide meaningful error messages
+- Log errors appropriately
+
+### Accessibility
+- Use semantic HTML elements
+- Include proper ARIA labels
+- Ensure keyboard navigation
+- Test with screen readers
+
+### Comments
+- Use JSDoc for function documentation
+- Explain complex business logic
+- Document performance optimizations
+- Keep comments up-to-date with code changes

@@ -1,0 +1,83 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Development Workflow Guide
+
+## Getting Started
+
+### Prerequisites
+- Install [Bun](mdc:https:/bun.sh) package manager
+- Docker and Docker Compose for database
+
+### Initial Setup
+```bash
+# Install dependencies
+bun install
+
+# Start database
+docker-compose up -d
+
+# Push database schema
+cd apps/server && bun run db:push
+
+# Start development servers
+bun dev
+```
+
+## Key Commands
+
+### Database Management
+```bash
+# Navigate to server directory for database operations
+cd apps/server
+
+# Generate migrations
+bun run db:generate
+
+# Push schema changes
+bun run db:push
+
+# View database studio
+bun run db:studio
+```
+
+### Development
+```bash
+# Start all development servers (from root)
+bun dev
+
+# Start individual apps
+bun dev --filter=web    # Frontend only
+bun dev --filter=server # Backend only
+
+# Build all apps
+bun build
+
+# Lint code
+bun lint
+
+# Format code  
+bun format
+```
+
+## Environment Setup
+
+### Server Configuration
+Copy [apps/server/.env.example](mdc:apps/server/.env.example) to `apps/server/.env` and configure:
+- Database connection string
+- JWT secrets
+- Authentication provider credentials
+
+### File Structure for New Features
+- **API Routes**: Add to [apps/server/src/routers/](mdc:apps/server/src/routers)
+- **Database Schema**: Update [apps/server/src/db/schema/](mdc:apps/server/src/db/schema)
+- **Frontend Routes**: Add to [apps/web/src/routes/](mdc:apps/web/src/routes)
+- **Components**: Add to [apps/web/src/components/](mdc:apps/web/src/components)
+
+## Development Best Practices
+- Use [turbo.json](mdc:turbo.json) for defining build/dev tasks
+- Follow the established tRPC patterns in [apps/server/src/lib/trpc.ts](mdc:apps/server/src/lib/trpc.ts)
+- Use shadcn/ui components from [apps/web/src/components/ui/](mdc:apps/web/src/components/ui)
+- Reference [biome.json](mdc:biome.json) for code style guidelines
