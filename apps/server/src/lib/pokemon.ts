@@ -1,6 +1,6 @@
+import { asc, eq, like, or } from "drizzle-orm";
 import { db } from "../db";
-import { pokemon, pokemonType, type Pokemon, type NewPokemon } from "../db/schema/pokemon";
-import { eq, and, or, like, asc, desc } from "drizzle-orm";
+import { type NewPokemon, type Pokemon, pokemon } from "../db/schema/pokemon";
 
 // PokeAPI types
 interface PokeAPISprites {
@@ -120,7 +120,10 @@ class PokeAPIService {
         return this.fetchWithCache<PokeAPIPokemon>(url);
     }
 
-    async fetchPokemonList(limit = 20, offset = 0): Promise<{
+    async fetchPokemonList(
+        limit = 20,
+        offset = 0,
+    ): Promise<{
         count: number;
         next: string | null;
         previous: string | null;
@@ -141,12 +144,18 @@ export const pokeApiService = new PokeAPIService();
 // Database operations
 export class PokemonService {
     async getPokemonById(id: number): Promise<Pokemon | null> {
-        const result = await db.select().from(pokemon).where(eq(pokemon.id, id));
+        const result = await db
+            .select()
+            .from(pokemon)
+            .where(eq(pokemon.id, id));
         return result[0] || null;
     }
 
     async getPokemonByName(name: string): Promise<Pokemon | null> {
-        const result = await db.select().from(pokemon).where(eq(pokemon.name, name));
+        const result = await db
+            .select()
+            .from(pokemon)
+            .where(eq(pokemon.name, name));
         return result[0] || null;
     }
 
@@ -154,9 +163,9 @@ export class PokemonService {
         limit = 20,
         offset = 0,
         search?: string,
-        typeFilter?: string
+        typeFilter?: string,
     ): Promise<Pokemon[]> {
-        let whereCondition = undefined;
+        let whereCondition;
 
         // Add search filter
         if (search) {
@@ -176,30 +185,30 @@ export class PokemonService {
                 .offset(offset);
         }
 
-        return query
-            .orderBy(asc(pokemon.order))
-            .limit(limit)
-            .offset(offset);
+        return query.orderBy(asc(pokemon.order)).limit(limit).offset(offset);
     }
 
     async getRandomPokemon(count = 1): Promise<Pokemon[]> {
         // Get random Pokemon IDs (1-1010 for current gen)
-        const randomIds = Array.from({ length: count }, () =>
-            Math.floor(Math.random() * 1010) + 1
+        const randomIds = Array.from(
+            { length: count },
+            () => Math.floor(Math.random() * 1010) + 1,
         );
 
-        const results = await db.select()
+        const results = await db
+            .select()
             .from(pokemon)
-            .where(or(...randomIds.map(id => eq(pokemon.id, id))));
+            .where(or(...randomIds.map((id) => eq(pokemon.id, id))));
 
         return results;
     }
 
     async fetchAndCachePokemon(idOrName: string | number): Promise<Pokemon> {
         // Check if Pokemon exists in database
-        const existingPokemon = typeof idOrName === 'number'
-            ? await this.getPokemonById(idOrName)
-            : await this.getPokemonByName(idOrName);
+        const existingPokemon =
+            typeof idOrName === "number"
+                ? await this.getPokemonById(idOrName)
+                : await this.getPokemonByName(idOrName);
 
         if (existingPokemon) {
             return existingPokemon;
@@ -257,9 +266,14 @@ export class PokemonService {
             // Fetch first 151 Pokemon in batches
             const batchSize = 10;
             for (let i = 1; i <= 151; i += batchSize) {
-                const batch = Array.from({ length: Math.min(batchSize, 151 - i + 1) }, (_, idx) => i + idx);
+                const batch = Array.from(
+                    { length: Math.min(batchSize, 151 - i + 1) },
+                    (_, idx) => i + idx,
+                );
                 await this.fetchAndCacheMultiplePokemon(batch);
-                console.log(`Cached Pokemon ${i} to ${Math.min(i + batchSize - 1, 151)}`);
+                console.log(
+                    `Cached Pokemon ${i} to ${Math.min(i + batchSize - 1, 151)}`,
+                );
             }
 
             console.log("Initial Pokemon data cached successfully!");
@@ -290,17 +304,26 @@ export class PokemonService {
         return {
             id: pokemonData.id,
             name: pokemonData.name,
-            image: sprites.other?.["official-artwork"]?.front_default ||
+            image:
+                sprites.other?.["official-artwork"]?.front_default ||
                 sprites.front_default ||
                 `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonData.id}.png`,
-            types: types.map(t => t.type.name),
+            types: types.map((t) => t.type.name),
             stats: {
-                hp: stats.find(s => s.stat.name === 'hp')?.base_stat || 0,
-                attack: stats.find(s => s.stat.name === 'attack')?.base_stat || 0,
-                defense: stats.find(s => s.stat.name === 'defense')?.base_stat || 0,
-                "special-attack": stats.find(s => s.stat.name === 'special-attack')?.base_stat || 0,
-                "special-defense": stats.find(s => s.stat.name === 'special-defense')?.base_stat || 0,
-                speed: stats.find(s => s.stat.name === 'speed')?.base_stat || 0,
+                hp: stats.find((s) => s.stat.name === "hp")?.base_stat || 0,
+                attack:
+                    stats.find((s) => s.stat.name === "attack")?.base_stat || 0,
+                defense:
+                    stats.find((s) => s.stat.name === "defense")?.base_stat ||
+                    0,
+                "special-attack":
+                    stats.find((s) => s.stat.name === "special-attack")
+                        ?.base_stat || 0,
+                "special-defense":
+                    stats.find((s) => s.stat.name === "special-defense")
+                        ?.base_stat || 0,
+                speed:
+                    stats.find((s) => s.stat.name === "speed")?.base_stat || 0,
             },
             height: pokemonData.height * 10, // decimeters to cm
             weight: Math.round(pokemonData.weight / 10), // hectograms to kg
